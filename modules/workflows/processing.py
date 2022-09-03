@@ -1,5 +1,8 @@
 import pandas as pd
 
+ALLOCATION_TEMPLATE_PATH = "files/Template/Allocation Template.xlsx"
+ALLOCATION_DATABASE_PATH = "files/data/Monitor Data.xlsx"
+
 
 def load_files(file_path: str, logger) -> pd.DataFrame:
     """
@@ -21,18 +24,29 @@ def load_files(file_path: str, logger) -> pd.DataFrame:
         logger.info(f"File loading complete: {status_fileloading}")
 
 
-def get_column_names(dataframe: pd.DataFrame) -> dict:
+def get_column_names(logger) -> list:
     """
     Returns the column names from template and generate allocation dataset.
     """
-
-    return dict(zip(dataframe.columns, dataframe.columns))
+    status_column_name = "Success"
+    try:
+        logger.info("Getting column names from template")
+        allocation_template = load_files(
+            file_path=ALLOCATION_TEMPLATE_PATH, logger=logger
+        )
+        return allocation_template.columns
+    except Exception as e:
+        status_column_name = "Failed"
+        logger.error(f"Error in occured: {e}")
+    finally:
+        logger.info(f"Column names generated: {status_column_name}")
 
 
 def transform_dataframe(dataframe: pd.DataFrame, columns: dict, logger) -> pd.DataFrame:
     """
-    1) Change the heading of dataframe.
+    Change the heading of dataframe.
     """
+    status_transform = "Success"
     try:
         logger.info("Changing column names of dataframe")
         dataframe.rename(columns=columns, inplace=True)
@@ -44,6 +58,41 @@ def transform_dataframe(dataframe: pd.DataFrame, columns: dict, logger) -> pd.Da
 
         return
     except Exception as e:
+        status_transform = "Failed"
         logger.error(f"Error in occured: {e}")
     finally:
-        logger.info(f"Column names of dataframe changed.")
+        logger.info(f"Column names of dataframe changed: {status_transform}")
+
+
+def load_allocation_database(dataframe: pd.DataFrame, logger) -> pd.DataFrame:
+    """
+    Load the excel database as dataframe.
+    """
+    status_load_database = "Success"
+    try:
+        logger.info("Loading data from excel.")
+        return load_files(file_path=ALLOCATION_DATABASE_PATH, logger=logger)
+    except Exception as e:
+        status_load_database = "Failed"
+        logger.error(f"Error in occured: {e}")
+    finally:
+        logger.info(f"Dataframe loaded to database: {status_load_database}")
+
+    def allocation_process(
+        monitor_db: pd.DataFrame, allocation_template: pd.DataFrame, logger
+    ) -> pd.DataFrame:
+        """
+        Process the allocation of monitors.
+        """
+        status_allocation_process = "Success"
+        try:
+            logger.info("Starting monitoring allocation process")
+            # allocation logic goes here
+            return pd.DataFrame()
+        except Exception as e:
+            status_allocation_process = "Failed"
+            logger.error(f"Error in occured: {e}")
+        finally:
+            logger.info(
+                f"Monitoring allocation process complete: {status_allocation_process}"
+            )
