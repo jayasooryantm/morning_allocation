@@ -157,3 +157,8 @@ cython_debug/
 *.DS_Store
 _wastefile.py
 
+#data files
+*.xlsx
+*.xls
+*.csv
+

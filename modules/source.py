@@ -3,7 +3,6 @@ from datetime import datetime as dt
 from modules.log_control import logging_functions
 from modules.workflows.processing import load_files
 
-
 LOG_LEVEL: int = 10  # DEBUG = 10, INFO = 20, WARNING = 30, ERROR = 40, CRITICAL = 50
 LOG_FILE_PATH = f"files/logs/Log_{dt.today().date()}.log"
 FILE_PATH = "files/file.csv"
@@ -21,7 +20,7 @@ def main():
     )
     logger.info("Allocation Started.")
 
-    # calling preprocessing workflow
+    # do the automation here...
 
     data = load_files(FILE_PATH, logger=logger)
     logger.info(f"Dataframe loaded. Shape: {data.shape}")
