@@ -78,21 +78,22 @@ def load_allocation_database(dataframe: pd.DataFrame, logger) -> pd.DataFrame:
     finally:
         logger.info(f"Dataframe loaded to database: {status_load_database}")
 
-    def allocation_process(
-        monitor_db: pd.DataFrame, allocation_template: pd.DataFrame, logger
-    ) -> pd.DataFrame:
-        """
-        Process the allocation of monitors.
-        """
-        status_allocation_process = "Success"
-        try:
-            logger.info("Starting monitoring allocation process")
-            # allocation logic goes here
-            return pd.DataFrame()
-        except Exception as e:
-            status_allocation_process = "Failed"
-            logger.error(f"Error in occured: {e}")
-        finally:
-            logger.info(
-                f"Monitoring allocation process complete: {status_allocation_process}"
-            )
+
+def allocation_process(
+    monitor_db: pd.DataFrame, allocation_template: pd.DataFrame, logger
+) -> pd.DataFrame:
+    """
+    Process the allocation of monitors.
+    """
+    status_allocation_process = "Success"
+    try:
+        logger.info("Starting monitoring allocation process")
+        # allocation logic goes here
+        return pd.DataFrame()
+    except Exception as e:
+        status_allocation_process = "Failed"
+        logger.error(f"Error in occured: {e}")
+    finally:
+        logger.info(
+            f"Monitoring allocation process complete: {status_allocation_process}"
+        )
