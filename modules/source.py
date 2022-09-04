@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 
 from modules.log_control import logging_functions
-from modules.workflows.processing import load_files
+from modules.workflows.core import load_files
 
 LOG_LEVEL: int = 10  # DEBUG = 10, INFO = 20, WARNING = 30, ERROR = 40, CRITICAL = 50
 LOG_FILE_PATH = f"files/logs/Log_{dt.today().date()}.log"
