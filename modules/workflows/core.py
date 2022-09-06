@@ -1,95 +1,77 @@
 import pandas as pd
+from datetime import datetime as dt
 
-ALLOCATION_TEMPLATE_PATH = "files/Template/Allocation Template.xlsx"
-ALLOCATION_DATABASE_PATH = "files/data/Monitor Data.xlsx"
-
-
-def load_files(file_path: str, logger) -> pd.DataFrame:
-    """
-    Loads the files based on excel or csv from the file_path and returns a dataframe.
-    """
-    status_fileloading = "Success"
-    try:
-        if file_path.endswith(".xlsx"):
-            return pd.read_excel(file_path)
-        elif file_path.endswith(".csv"):
-            return pd.read_csv(file_path)
-        else:
-            logger.error(f"{file_path}:file type not supported")
-            status_fileloading = "Failed"
-    except Exception as e:
-        logger.error(f"Error in occured: {file_path}: {e}")
-        status_fileloading = "Failed"
-    finally:
-        logger.info(f"File loading complete: {status_fileloading}")
+monitor_db_path = "files/database/db_monitors.xlsx"
+allocation_template_path = "files/database/db_allocation_template.xlsx"
+subject_db_path = "files/database/db_subjects.xlsx"
+powerbi_data_path = "files/input/data.xlsx"
 
 
-def get_column_names(logger) -> list:
-    """
-    Returns the column names from template and generate allocation dataset.
-    """
-    status_column_name = "Success"
-    try:
-        logger.info("Getting column names from template")
-        allocation_template = load_files(
-            file_path=ALLOCATION_TEMPLATE_PATH, logger=logger
-        )
-        return allocation_template.columns
-    except Exception as e:
-        status_column_name = "Failed"
-        logger.error(f"Error in occured: {e}")
-    finally:
-        logger.info(f"Column names generated: {status_column_name}")
-
-
-def transform_dataframe(dataframe: pd.DataFrame, columns: dict, logger) -> pd.DataFrame:
-    """
-    Change the heading of dataframe.
-    """
-    status_transform = "Success"
-    try:
-        logger.info("Changing column names of dataframe")
-        dataframe.rename(columns=columns, inplace=True)
-
-        logger.info("Dropping unwanted columns")
-        dataframe.drop(
-            columns=dataframe.columns.difference(columns.values()), inplace=True
-        )
-
-        return
-    except Exception as e:
-        status_transform = "Failed"
-        logger.error(f"Error in occured: {e}")
-    finally:
-        logger.info(f"Column names of dataframe changed: {status_transform}")
-
-
-def load_allocation_database(dataframe: pd.DataFrame, logger) -> pd.DataFrame:
-    """
-    Load the excel database as dataframe.
-    """
-    status_load_database = "Success"
-    try:
-        logger.info("Loading data from excel.")
-        return load_files(file_path=ALLOCATION_DATABASE_PATH, logger=logger)
-    except Exception as e:
-        status_load_database = "Failed"
-        logger.error(f"Error in occured: {e}")
-    finally:
-        logger.info(f"Dataframe loaded to database: {status_load_database}")
-
-
-def allocation_process(
-    monitor_db: pd.DataFrame, allocation_template: pd.DataFrame, logger
-) -> pd.DataFrame:
+def allocation_process(logger) -> None:
     """
     Process the allocation of monitors.
     """
     status_allocation_process = "Success"
     try:
         logger.info("Starting monitoring allocation process")
-        # allocation logic goes here
-        return pd.DataFrame()
+        # loading files
+        logger.info("Loading files...")
+        """power_bi_data = pd.read_excel(powerbi_data_path)
+        monitor_db = pd.read_excel(monitor_db_path)
+        allocation_data = pd.DataFrame()
+        allocation_template = pd.read_excel(allocation_template_path)
+        subject_db = pd.read_excel(subject_db_path)
+
+        power_bi_data = power_bi_data[power_bi_data["Batch_Status"] != "Closed"]
+        power_bi_data.reset_index(drop=True, inplace=True)
+        allocation_data = power_bi_data[
+            [
+                "Subject Group",
+                "Component",
+                "Reviewer",
+                "Batch ID",
+                "Batch_Status",
+                "Batch_Size",
+            ]
+        ]
+
+        allocation_data = allocation_data.dropna(how="all").copy()
+        for index, row in allocation_data[
+            allocation_data["Subject Group"].isnull()
+        ].iterrows():
+            print(row["Subject Group"], row["Component"])
+
+        allocation_data.insert(0, "Type", ["RM"] * len(allocation_data))
+        allocation_data.to_csv("files/output/test_output.xlsx", index=False)"""
+
+        monitor_data = pd.read_excel(monitor_db_path)
+        data = pd.read_excel(powerbi_data_path)
+
+        data.sort_values(by=["Subject Group", "Component"], inplace=True)
+
+        for index, row in data.iterrows():
+            row["Monitor"] = monitor_data[
+                monitor_data["subject_group"] == row["Subject Group"]
+                and (
+                    row["Component"]
+                    not in [
+                        monitor_data["std_1"],
+                        monitor_data["std_2"],
+                        monitor_data["std_3"],
+                        monitor_data["std_4"],
+                        monitor_data["std_5"],
+                        monitor_data["std_6"],
+                        monitor_data["std_7"],
+                        monitor_data["std_8"],
+                        monitor_data["std_9"],
+                    ]
+                )
+                and (
+                    monitor_data[dt.today().strftime("%dd-%mmm")].to_string().lower()
+                    == "yes"
+                )
+            ]
+        return None
     except Exception as e:
         status_allocation_process = "Failed"
         logger.error(f"Error in occured: {e}")

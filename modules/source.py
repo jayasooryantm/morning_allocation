@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 
 from modules.log_control import logging_functions
-from modules.workflows.core import load_files
+from modules.workflows.core import allocation_process
 
 LOG_LEVEL: int = 10  # DEBUG = 10, INFO = 20, WARNING = 30, ERROR = 40, CRITICAL = 50
 LOG_FILE_PATH = f"files/logs/Log_{dt.today().date()}.log"
@@ -22,7 +22,6 @@ def main():
 
     # do the automation here...
 
-    data = load_files(FILE_PATH, logger=logger)
-    logger.info(f"Dataframe loaded. Shape: {data.shape}")
+    allocation_process(logger=logger)
 
     logger.info("Allocation Finished.")
