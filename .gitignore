@@ -158,7 +158,7 @@ cython_debug/
 _wastefile.py
 
 #data files
-*.xlsx
-*.xls
-*.csv
+#*.xlsx
+#*.xls
+#*.csv
 
