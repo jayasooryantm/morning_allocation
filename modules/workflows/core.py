@@ -73,7 +73,7 @@ def allocation_process(logger) -> None:
                     )
 
                     if (
-                        (current_load < 10)
+                        (current_load < 11)
                         and (row["Component"] not in standardised)
                         and (str(row["Monitor"]).strip() == "nan")
                     ):
